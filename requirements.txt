@@ -1,2 +1,2 @@
 trafilatura
-google.cola
+google.colab
