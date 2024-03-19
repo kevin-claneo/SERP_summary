@@ -1,0 +1,41 @@
+import requests
+from json import loads, dumps
+import pandas as pd
+import trafilatura
+
+from google.colab import files, auth
+auth.authenticate_user()
+import gspread
+from google.auth import default
+from http.client import HTTPSConnection
+from base64 import b64encode
+# creating the Restclient
+class RestClient:
+    domain = "api.dataforseo.com"
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def request(self, path, method, data=None):
+        connection = HTTPSConnection(self.domain)
+        try:
+            base64_bytes = b64encode(
+                ("%s:%s" % (self.username, self.password)).encode("ascii")
+                ).decode("ascii")
+            headers = {'Authorization' : 'Basic %s' %  base64_bytes, 'Content-Encoding' : 'gzip'}
+            connection.request(method, path, headers=headers, body=data)
+            response = connection.getresponse()
+            return loads(response.read().decode())
+        finally:
+            connection.close()
+
+    def get(self, path):
+        return self.request(path, 'GET')
+
+    def post(self, path, data):
+        if isinstance(data, str):
+            data_str = data
+        else:
+            data_str = dumps(data)
+        return self.request(path, 'POST', data_str)
