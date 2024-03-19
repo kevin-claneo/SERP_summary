@@ -3,10 +3,7 @@ from json import loads, dumps
 import pandas as pd
 import trafilatura
 
-from google.colab import files, auth
-auth.authenticate_user()
-import gspread
-from google.auth import default
+
 from http.client import HTTPSConnection
 from base64 import b64encode
 # creating the Restclient
